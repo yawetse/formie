@@ -1,4 +1,3 @@
-formie
-======
+# formie  [![NPM version](https://badge.fury.io/js/formie.svg)](http://badge.fury.io/js/formie)
 
-vanillajs ajax forms, with multipart encoding support
+** coming soon ** 

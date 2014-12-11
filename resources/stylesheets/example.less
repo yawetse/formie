@@ -1,0 +1,76 @@
+*, *:after, *:before { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+body, html { font-size: 100%; padding: 0; margin: 0;}
+
+@documentation_blue:  #47a3da;
+
+/* Clearfix hack by Nicolas Gallagher: http://nicolasgallagher.com/micro-clearfix-hack/ */
+.clearfix:before, .clearfix:after { content: " "; display: table; }
+.clearfix:after { clear: both; }
+.clearfix{
+	zoom:1;
+}
+
+body {
+    font-family: 'Lato', Calibri, Arial, sans-serif;
+    color: @documentation_blue;
+}
+
+a {
+	color: #ccc;
+	text-decoration: none;
+	outline: none;
+}
+
+a:hover {
+	color: #000;
+}
+
+header{
+	border-bottom: 1px solid @documentation_blue;
+}
+
+button{
+	font-size:120%;
+	padding: .5em;
+}
+
+.container{
+	margin:3em;
+	max-width: 40em;
+	h1{
+		small{
+			font-size:50%;
+			button{
+				margin: 0 .5em;
+				cursor: pointer;
+				float: right;
+			}
+		}
+	}
+	form{
+		.clearfix;
+		& > section{
+			margin: 0.5em;
+			padding: 1em 0;
+			line-height: 2em;
+			min-height: 2em;
+			// .clearfix;
+			label{
+				display: block;
+				float:	left;
+				width: 20%;
+				min-height: 2em;
+			}
+			.label-data{
+				display: block;
+				float:	left;
+				width: 80%;
+				color:#333;
+				background: #ececec;
+				border: 1px solid @documentation_blue;
+				padding: .5em;
+				min-height: 2em;
+			}
+		}
+	}
+}
