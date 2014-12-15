@@ -35,7 +35,7 @@ button{
 }
 
 .container{
-	margin:3em;
+	margin:auto;
 	max-width: 40em;
 	h1{
 		small{
@@ -49,7 +49,7 @@ button{
 	}
 	form{
 		.clearfix;
-		& > section{
+		& > article section{
 			margin: 0.5em;
 			padding: 1em 0;
 			line-height: 2em;
@@ -58,19 +58,57 @@ button{
 			label{
 				display: block;
 				float:	left;
-				width: 20%;
+				width: 30%;
 				min-height: 2em;
 			}
-			.label-data{
+			.label-data-container{
 				display: block;
 				float:	left;
-				width: 80%;
+				width: 68%;
+				padding: .5em;
+				min-height: 2em;
+			}
+
+			.label-data-style{
+				display: block;
+				float:	left;
+				width: 100%;
 				color:#333;
 				background: #ececec;
 				border: 1px solid @documentation_blue;
 				padding: .5em;
 				min-height: 2em;
+				border-radius: .25em;
 			}
 		}
+		input[type=submit]{
+			width: 80%;
+			text-align: center;
+			margin: 3em;
+			border: 1px solid @documentation_blue;
+			background: #ececec;
+			border-radius: .25em;
+			font-size: 1.2em;
+			padding: .25em;
+		}
+	}
+	.right-border{
+		border-right: 1px solid @documentation_blue;
+	}
+	pre#forbject-test-result{
+		margin-left: 1em;
+		color:#333;
+		background: #ececec;
+		border: 1px solid @documentation_blue;
+		padding: .5em;
+		min-height: 2em;
+	}
+
+	.pull-left{
+		float:left;
+	}
+	.width50{
+		width:50%;
+		// padding: 2em;
 	}
 }

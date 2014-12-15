@@ -95,7 +95,7 @@ module.exports = function (grunt) {
 				cwd: 'example',
 				expand: true,
 				src: '**/*.*',
-				dest: '../../../example/themes/periodicjs.theme.periodical',
+				dest: '../../public/formie',
 			},
 		},
 		less: {
@@ -137,7 +137,7 @@ module.exports = function (grunt) {
 					'resources/**/*.ejs',
 					'test/**/*.js',
 				],
-				tasks: ['lint', 'packagejs', 'less', 'html', /*'doc',*/ 'test'],
+				tasks: ['lint', 'packagejs', 'less', 'html', 'copy', /*'doc',*/ 'test'],
 				options: {
 					interrupt: true
 				}
