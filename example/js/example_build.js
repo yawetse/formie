@@ -43,14 +43,16 @@ var formie = function (options) {
 	events.EventEmitter.call(this);
 
 	var defaultOptions = {
+		ajaxsubmitclassname: 'formie',
 		ajaxsubmitselector: '.formie',
+		ajaxsubmitelements: [],
 		autosubmitselectors: '.autoFormSubmit',
 		autosubmitelements: [],
 		preventsubmitselectors: '.noFormSubmit',
 		preventsubmitelements: [],
 		headers: {},
-		method: 'get',
-		action: '/',
+		// method: 'get',
+		// action: '/',
 		queryparameters: {},
 		postdata: {},
 		beforesubmitcallback: null,
@@ -60,18 +62,29 @@ var formie = function (options) {
 	this.options = extend(defaultOptions, options);
 
 	this.init = this._init;
+	this.ajaxSubmitFormie = this.__ajaxSubmitFormie;
 	this.submitOnChangeListeners = this.__submitOnChangeListeners;
 	this.autoSubmitFormOnChange = this.__autoSubmitFormOnChange;
 	this.preventEnterSubmitListeners = this.__preventEnterSubmitListeners;
 	this.preventSubmitOnEnter = this.__preventSubmitOnEnter;
+	this.ajaxFormEventListers = this.__ajaxFormEventListers;
+	this.init();
 	// this.render = this._render;
 	// this.addBinder = this._addBinder;
 };
 
 util.inherits(formie, events.EventEmitter);
 
-formie.prototype.ajaxSubmitFormie = function (e, element) {
-	// console.log('e', e);
+// formie.prototype.ajaxEventSubmitHandler = function(e){
+// 	this.ajaxSubmitFormie(e);
+// };
+
+formie.prototype.__ajaxSubmitFormie = function (e, element) {
+	// console.log('this', this, 'e', e, 'element', element);
+
+	if (e) {
+		e.preventDefault();
+	}
 	var f = (element) ? element : e.target,
 		beforefn,
 		errorfn,
@@ -99,7 +112,7 @@ formie.prototype.ajaxSubmitFormie = function (e, element) {
 					successfn(response);
 				}
 			}
-		};
+		}.bind(this);
 	if (this.options.beforesubmitcallback) {
 		beforefn = this.options.beforesubmitcallback;
 		if (typeof beforefn === 'function') {
@@ -113,8 +126,12 @@ formie.prototype.ajaxSubmitFormie = function (e, element) {
 
 	formData = new forbject(f).getObject();
 
+	this.options.method = (f.getAttribute('method')) ? f.getAttribute('method') : this.options.method;
+	this.options.action = (f.getAttribute('action')) ? f.getAttribute('action') : (this.options.action) ? this.options.action : window.location.href;
+
 	if (this.options.method === 'get') {
-		formieData = extend(this.options.queryparameters, this.options.postdata);
+		formieData = extend(formData, this.options.queryparameters);
+		formieData = extend(formData, this.options.postdata);
 		request
 			.get(this.options.action)
 			.set(this.options.headers)
@@ -129,27 +146,27 @@ formie.prototype.ajaxSubmitFormie = function (e, element) {
 			.send(this.options.postdata)
 			.end(ajaxResponseHandler);
 	}
-	if (e) {
-		e.preventDefault();
-	}
+	return false;
 };
 
 formie.prototype.__autoSubmitFormOnChange = function () {
-	var formElement = this.form;
-	if (classie.hasClass(formElement, this.options.ajaxsubmitselector)) {
-		formie.ajaxSubmitFormie(null, formElement);
+	var formElement = (this.form) ? this.form : this.options.form;
+
+	if (classie.hasClass(formElement, this.options.ajaxsubmitclassname)) {
+		this.ajaxSubmitFormie(null, formElement);
 	}
 	else {
 		formElement.submit();
 	}
-	// console.log('this.form', this.form);
 };
 
 formie.prototype.__submitOnChangeListeners = function () {
 	this.options.autosubmitelements = document.querySelectorAll(this.options.autosubmitselectors);
 	for (var x in this.options.autosubmitelements) {
 		if (typeof this.options.autosubmitelements[x] === 'object') {
-			this.options.autosubmitelements[x].addEventListener('change', this.autoSubmitFormOnChange, false);
+			this.options.form = this.options.autosubmitelements[x].form;
+
+			this.options.autosubmitelements[x].addEventListener('change', this.autoSubmitFormOnChange.bind(this), false);
 		}
 	}
 };
@@ -177,13 +194,27 @@ formie.prototype.__preventEnterSubmitListeners = function () {
 	// document.addEventListener('keypress', preventSubmitOnEnter, false);
 };
 
+formie.prototype.__ajaxFormEventListers = function () {
+	this.options.ajaxsubmitselectors = document.querySelectorAll(this.options.ajaxsubmitselector);
+
+	for (var x in this.options.ajaxsubmitselectors) {
+		if (typeof this.options.ajaxsubmitselectors[x] === 'object') {
+			var formData = new forbject(this.options.ajaxsubmitselectors[x]).getObject();
+
+			// console.log(this.ajaxSubmitFormie);
+			this.options.ajaxsubmitselectors[x].addEventListener('submit', this.ajaxSubmitFormie.bind(this), false);
+		}
+	}
+};
+
 formie.prototype._init = function () {
+	this.ajaxFormEventListers();
 	this.submitOnChangeListeners();
 	this.preventEnterSubmitListeners();
 };
 module.exports = formie;
 
-},{"classie":3,"events":7,"forbject":5,"superagent":14,"util":11,"util-extend":12}],3:[function(require,module,exports){
+},{"classie":3,"events":7,"forbject":5,"superagent":12,"util":11,"util-extend":15}],3:[function(require,module,exports){
 /*
  * classie
  * http://github.amexpub.com/modules/classie
@@ -1528,124 +1559,6 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./support/isBuffer":10,"_process":9,"inherits":8}],12:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-module.exports = extend;
-function extend(origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || typeof add !== 'object') return origin;
-
-  var keys = Object.keys(add);
-  var i = keys.length;
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-  return origin;
-}
-
-},{}],13:[function(require,module,exports){
-'use strict';
-
-var formie = require('../../index'),
-	formie1,
-	yawbutton,
-	rafbutton,
-	ajaxbutton;
-
-var yawprofiledata = {
-		username: "@yawetse",
-		profile: {
-			summary: "<h2>@yawetse's profile</h2><p>probably from database</p>"
-		}
-	},
-	rafprofiledata = {
-		username: "@sonicsound",
-		profile: {
-			summary: "<h2>@sonicsound's profile</h2><p>you can overwrite formie's  render prototype function to use your favorite own template language. The default is EJS</p>"
-		}
-	},
-	ajaxprofiledata = {
-		username: "@ajaxmockcall",
-		profile: {
-			summary: "<h2>grab this from ajax post/get</p>"
-		}
-	};
-
-var loadprofile = function (e) {
-	var etarget = e.target;
-	if (etarget.id === 'yawbutton') {
-		formie1.update({
-			data: yawprofiledata
-		});
-	}
-	else if (etarget.id === 'rafbutton') {
-		formie1.update({
-			data: rafprofiledata
-		});
-	}
-	else if (etarget.id === 'ajaxbutton') {
-		formie1.update({
-			data: ajaxprofiledata
-		});
-	}
-};
-
-// var tabEvents = function () {
-// 	formie1.on('tabsShowIndex', function (index) {
-// 		console.log('tab show index', index);
-// 	});
-// };
-
-window.addEventListener('load', function () {
-
-	yawbutton = document.querySelector('#yawbutton');
-	rafbutton = document.querySelector('#rafbutton');
-	// ajaxbutton = document.querySelector('#ajaxbutton');
-
-	formie1 = new formie({
-		ejsopen: '{{',
-		ejsclose: '}}'
-	});
-
-	formie1.addBinder({
-		prop: 'username',
-		elementSelector: '#username',
-		binderType: 'value'
-	});
-
-	formie1.addBinder({
-		prop: 'profile',
-		elementSelector: '#profile',
-		binderType: 'template',
-		binderTemplate: document.querySelector('#profile-template').innerHTML
-	});
-
-	yawbutton.addEventListener('click', loadprofile, false);
-	rafbutton.addEventListener('click', loadprofile, false);
-	// ajaxbutton.addEventListener('click', loadprofile, false);
-	window.formie1 = formie1;
-}, false);
-
-},{"../../index":1}],14:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -2728,7 +2641,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":15,"reduce":16}],15:[function(require,module,exports){
+},{"emitter":13,"reduce":14}],13:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -2894,7 +2807,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],16:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
@@ -2919,4 +2832,60 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}]},{},[13]);
+},{}],15:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+module.exports = extend;
+function extend(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || typeof add !== 'object') return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+}
+
+},{}],16:[function(require,module,exports){
+'use strict';
+
+var formie = require('../../index'),
+	formie1,
+	responseContainer;
+
+window.addEventListener('load', function () {
+	responseContainer = document.querySelector('#formie-test-result');
+	formie1 = new formie({
+		queryparameters: {
+			format: 'json'
+		},
+		successcallback: function (response) {
+			responseContainer.innerHTML = JSON.stringify(response.body, null, 2);
+		}
+	});
+
+	window.formie1 = formie1;
+}, false);
+
+},{"../../index":1}]},{},[16]);
