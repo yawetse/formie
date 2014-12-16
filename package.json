@@ -15,10 +15,11 @@
     "url": "git@github.com:yawetse/formie.git"
   },
   "dependencies": {
+    "async": ">=0.9.0",
     "classie": ">=0.1.0",
-    "superagent": ">=0.18.0",
-    "forbject": ">=1.0.0",
     "ejs": ">=0.8.5",
+    "forbject": ">=1.0.0",
+    "superagent": ">=0.18.0",
     "util-extend": ">=1.0.1"
   },
   "devDependencies": {
