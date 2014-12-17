@@ -2,6 +2,7 @@
 
 var formie = require('../../index'),
 	formieduckduckgo,
+	formiegithub,
 	formie1,
 	formie2,
 	responseContainer;
@@ -20,6 +21,16 @@ window.addEventListener('load', function () {
 		},
 		successcallback: function (response) {
 			responseContainer.innerHTML = JSON.stringify(response, null, 2);
+		}
+	});
+
+	formiegithub = new formie({
+		ajaxsubmitselector: '#github-formie-test',
+		// queryparameters: {
+		// 	callback: 'duckduckgocallback',
+		// },
+		successcallback: function (response) {
+			responseContainer.innerHTML = response.text;
 		}
 	});
 

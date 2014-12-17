@@ -54,7 +54,9 @@ button{
 			padding: 1em 0;
 			line-height: 2em;
 			min-height: 2em;
-			// .clearfix;
+			clear:both;
+			margin-top: 0;
+			padding-top: 0;
 			label{
 				display: block;
 				float:	left;
@@ -67,6 +69,9 @@ button{
 				width: 68%;
 				padding: .5em;
 				min-height: 2em;
+				
+				margin-top: 0;
+				padding-top: 0;
 			}
 
 			.label-data-style{
@@ -79,14 +84,23 @@ button{
 				padding: .5em;
 				min-height: 2em;
 				border-radius: .25em;
+
+				// margin-top: 0;
+				// padding-top: 0;
+			}
+			&:last-child{
+				// border-top: 1px solid @documentation_blue;
+				text-align: center;
+				margin-bottom: 8em;
 			}
 		}
 		input[type=submit]{
 			width: 80%;
 			text-align: center;
-			margin: 3em;
+			margin: auto;
 			border: 1px solid @documentation_blue;
-			background: #ececec;
+			color: #fff;
+			background: @documentation_blue;
 			border-radius: .25em;
 			font-size: 1.2em;
 			padding: .25em;
@@ -95,13 +109,21 @@ button{
 	.right-border{
 		border-right: 1px solid @documentation_blue;
 	}
-	pre#forbject-test-result{
+	pre#formie-test-result{
 		margin-left: 1em;
 		color:#333;
 		background: #ececec;
 		border: 1px solid @documentation_blue;
 		padding: .5em;
-		min-height: 2em;
+		min-height: 10em;
+		max-height: 35em;
+		overflow: auto;
+
+		position: fixed;
+		display: block;
+		width: 35%;
+		margin-top: 0;
+		padding-top: 0;
 	}
 
 	.pull-left{

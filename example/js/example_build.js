@@ -26,7 +26,9 @@ var async = require('async'),
 	forbject = require('forbject'),
 	request = require('superagent'),
 	querystring = require('querystring'),
-	util = require('util');
+	util = require('util'),
+	jsonpscript,
+	documentHeadElement;
 
 /**
  * A module that represents a formie object, a componentTab is a page composition tool.
@@ -92,7 +94,6 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 		beforefn,
 		errorfn,
 		successfn,
-		// jsonpscript,
 		formieDataFromForm,
 		formieData,
 		ajaxResponseHandler = function (err, response) {
@@ -135,18 +136,26 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 	this.options.action = (f.getAttribute('action')) ? f.getAttribute('action') : (this.options.action) ? this.options.action : window.location.href;
 
 	if (this.options.jsonp) {
-		//TODO: replace same script
 		formieData = extend(formieDataFromForm, this.options.queryparameters);
+		// head element
+		documentHeadElement = (documentHeadElement) ? documentHeadElement : document.getElementsByTagName('head')[0];
+
+		// remove existing 
+		if (document.querySelector('#formie-jsonp')) {
+			documentHeadElement.removeChild(document.querySelector('#formie-jsonp'));
+		}
+
 		// Create a new script element
-		var script_element = document.createElement('script');
+		jsonpscript = document.createElement('script');
 
 		// Set its source to the JSONP API
-		script_element.src = this.options.action + '?' + querystring.stringify(formieData);
+		jsonpscript.src = this.options.action + '?' + querystring.stringify(formieData);
+		jsonpscript.id = 'formie-jsonp';
 
 		window[formieData.callback] = this.options.successcallback;
 
 		// Stick the script element in the page <head>
-		document.getElementsByTagName('head')[0].appendChild(script_element);
+		documentHeadElement.appendChild(jsonpscript);
 	}
 	else if (f.getAttribute('enctype') === 'multipart/form-data') {
 		var formData = new FormData(f),
@@ -191,7 +200,7 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 					client.send(formData); /* Send to server */
 					// client.onreadystatechange = function () {
 					client.onloadend = function () {
-						console.log('client', client);
+						// console.log('client', client);
 						if (client.readyState === 4) {
 							var res = {};
 							res.body = JSON.parse(client.response);
@@ -237,7 +246,7 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 formie.prototype.__autoSubmitFormOnChange = function () {
 	var formElement = (this.form) ? this.form : this.options.form;
 
-	console.log('formElement', formElement);
+	// console.log('formElement', formElement);
 	if (classie.hasClass(formElement, this.options.ajaxsubmitclassname)) {
 		this.ajaxSubmitFormie(null, formElement);
 	}
@@ -4256,6 +4265,7 @@ function extend(origin, add) {
 
 var formie = require('../../index'),
 	formieduckduckgo,
+	formiegithub,
 	formie1,
 	formie2,
 	responseContainer;
@@ -4274,6 +4284,16 @@ window.addEventListener('load', function () {
 		},
 		successcallback: function (response) {
 			responseContainer.innerHTML = JSON.stringify(response, null, 2);
+		}
+	});
+
+	formiegithub = new formie({
+		ajaxsubmitselector: '#github-formie-test',
+		// queryparameters: {
+		// 	callback: 'duckduckgocallback',
+		// },
+		successcallback: function (response) {
+			responseContainer.innerHTML = response.text;
 		}
 	});
 
