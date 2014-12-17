@@ -90,6 +90,25 @@ module.exports = function (grunt) {
 				}]
 			}
 		},
+		connect: {
+			server: {
+				options: {
+					index: 'index.html',
+					port: 8181,
+					hostname: '*',
+					base: 'example',
+					debug: true,
+					// open: true,
+					keepalive: true,
+					// middleware: [
+					// 	function myMiddleware(req, res, next) {
+					// 		res.end('Hello, world!');
+					// 		next();
+					// 	}
+					// ],
+				}
+			}
+		},
 		copy: {
 			main: {
 				cwd: 'example',
@@ -137,7 +156,7 @@ module.exports = function (grunt) {
 					'resources/**/*.ejs',
 					'test/**/*.js',
 				],
-				tasks: ['lint', 'packagejs', 'less', 'html', 'copy', /*'doc',*/ 'test'],
+				tasks: ['lint', 'packagejs', 'less', 'html', 'test', 'connect' /*'copy', /*'doc',*/ ],
 				options: {
 					interrupt: true
 				}

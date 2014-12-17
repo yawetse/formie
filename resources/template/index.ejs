@@ -1,45 +1,139 @@
 <html>
 
 <head>
-  <title>formie</title>
+  <title>Formie</title>
   <link rel="stylesheet" type="text/css" href="stylesheets/example.css">
   <!-- <link rel="stylesheet" type="text/css" href="stylesheets/formie.css"> -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
   <script src='js/example.min.js'></script>
 </head>
 
 <body>
   <div class="container">
     <header class="clearfix">
-      <h1>CommonJS/Browserified simple data view binding, without magic</h1>
-      <p>formie maps ui elements to a formie object. This is a quick and simple vanilla JS way to data bind element. When paired with ajax forms (check out <a href="http://npmjs.org/package/formie">formie</a>), provides a comprehensive data-binding ui framework without the baggage of a full framework.</p>
+      <h1>CommonJS/Browserified ajax form submission</h1>
+      <p>Formie submits form data via AJAX. Formie supports JSONP, GET, POST, DELETE and multipart/form-data file Uploads without the baggage of a full framework.</p>
       </p>
       <h3>Full API <a href="http://yawetse.github.io/formie/api/html">documentation</a>
       </h3>
-
     </header>
     <div class="formie-test">
-      <h1>formie Test
-        <small>
-          <button id="yawbutton">@yaw</button>
-          <button id="rafbutton">@raf</button>
-          <!-- <button id="ajaxbutton">@ajax</button> -->
-        </small>
-      </h1>
+      <div class="pull-left width50">
+        <form id="duckduckgo-formie-test" name="duckduckgo-formie-test" action="http://api.duckduckgo.com/" class="formie" method="get">
+          <h2>GET JSONP Test</h2>
+          <article class="right-border">
+            <section>
+              <label for="q">Search</label>
+              <div class="label-data-container">
+                <input class="label-data-style" type="text" value="The New York Times" name="q" id="q" />
+                <input type="hidden" name="format" value="json">
+              </div>
+            </section>
+            <section>
+              <input type="submit" name="testformiesubmit" value="Search DuckDuckGo" />
+            </section>
+          </article>
+        </form>
+        <form id="html-formie-test" name="html-formie-test" action="./htmltest.html" class="formie" method="get">
+          <h2>GET HTML Test</h2>
+          <article class="right-border">
+            <section>
+              <input type="submit" name="gethtml" value="Get HTML" />
+            </section>
+          </article>
+        </form>
+        <form id="formie-test" name="formie-test" action="" class="formie" method="get">
+          <h2>GET JSON Test</h2>
+          <article class="right-border">
+            <section>
+              <label for="username">Username</label>
+              <div class="label-data-container">
+                <input class="label-data-style autoFormSubmit" type="text" value="@user" name="username" id="username" />
+              </div>
+            </section>
+            <section>
+              <label for="location">Location</label>
+              <div class="label-data-container">
+                <select class="label-data-style autoFormSubmit" id="location" name="location">
+                  <option value="newyork">New York</option>
+                  <option value="losangeles">Los Angeles</option>
+                  <option value="Miami">Miami</option>
+                  <option value="Chicago">Chicago</option>
+                </select>
+              </div>
+            </section>
+            <section>
+              <label for="tastes">tastes</label>
+              <div class="label-data-container">
+                <input type="checkbox" name="tastes" value="music" class="autoFormSubmit" checked>music</br>
+                <input type="checkbox" name="tastes" value="movies" class="autoFormSubmit">movies</br>
+                <input type="checkbox" name="tastes" value="art" class="autoFormSubmit">art</br>
+                <input type="checkbox" name="tastes" value="food" class="autoFormSubmit" checked>food
+              </div>
+            </section>
+            <section>
+              <label for="sex">Gender</label>
+              <div class="label-data-container">
+                <input type="radio" name="sex" value="male" class="autoFormSubmit" checked>Male
+                <br>
+                <input type="radio" name="sex" class="autoFormSubmit" value="female">Female
+              </div>
+            </section>
+            <!--             <section>
+              <label for="image">Image</label>
+              <div class="label-data-container">
+                <input type="file" id="image" class="label-data-style autoFormSubmit" name="image" multiple="multiple">
+              </div>
+            </section> -->
+            <section>
+              <label>Profile</label>
+              <div class="label-data-container">
+                <textarea class="label-data-style autoFormSubmit" name="description" id="description"></textarea>
+              </div>
+            </section>
+            <section>
+              <input type="submit" name="testformiesubmit" value="AJAX Get" />
+            </section>
+          </article>
+        </form>
 
-      <form>
-        <section>
-          <label for="username">Username</label>
-          <input class="label-data" type="text" value="" name="username" id="username" />
-        </section>
-        <section>
-          <label>Profile</label>
-          <div class="label-data" id="profile"></div>
-        </section>
-      </form>
+        <form id="upload-formie-test" name="upload-formie-test" action="postresult.json" class="formie" method="post" enctype="multipart/form-data">
+          <h2>POST JSON: Upload media test</h2>
+          <article class="right-border">
+            <section>
+              <label for="title">title</label>
+              <div class="label-data-container">
+                <input class="label-data-style autoFormSubmit" type="text" value="" name="title" id="title" />
+              </div>
+            </section>
+            <section>
+              <label for="image">Image</label>
+              <div class="label-data-container">
+                <input type="file" id="image" class="label-data-style formie-file autoFormSubmit" name="image" multiple="multiple">
+              </div>
+            </section>
+            <section>
+              <label>description</label>
+              <div class="label-data-container">
+                <textarea class="label-data-style" name="description" id="description"></textarea>
+              </div>
+            </section>
+            <section>
+              <input type="submit" name="testformiesubmit" value="AJAX Post Upload" />
+            </section>
+          </article>
+
+        </form>
+      </div>
+      <div class="pull-left width50">
+        <div class="fixed-response-container">
+          <h2>Form Response Data</h2>
+          <pre id="formie-test-result"></pre>
+        </div>
+      </div>
     </div>
-    <% include _profile_template %>
   </div>
   <script>
   (function(i, s, o, g, r, a, m) {

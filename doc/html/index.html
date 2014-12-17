@@ -42,49 +42,30 @@
 
     <section>
         <article><h1>formie  <a href="http://badge.fury.io/js/formie"><img src="https://badge.fury.io/js/formie.svg" alt="NPM version"></a></h1>
-<p><strong> CommonJS/Browserified simple data view binding, without magic </strong></p>
-<p>This is a quick and light weight vanilla JS way to data bind UI elements. </p>
-<p>When paired with ajax forms (check out  <a href="http://npmjs.org/package/formie">formie</a>), provides a comprehensive data-binding ui framework without the baggage of a full framework.</p></p>
-<p> <a href="https://yawetse.github.io/formie/api/html/index.html">API Documenation</a></p>
+<p><strong> CommonJS/Browserified ajax form submission </strong></p>
+<p>Formie submits form data via AJAX. Formie supports JSONP, GET, POST, DELETE and multipart/form-data file Uploads without the baggage of a full framework. </p>
+<p><a href="https://yawetse.github.io/formie/api/html/index.html">API Documenation</a></p>
 <h2>Example</h2>
 <p>Check out <code>example/index.html</code>, the example javascript for the example page is <code>resources/js/example_src.js</code></p>
 <h2>Installation</h2>
 <pre><code>$ npm install formie</code></pre>
-<p>Binde is a browserified/commonjs javascript module.</p>
+<p>Formie is a browserified/commonjs javascript module.</p>
 <h2>Usage</h2>
 <p><em>JavaScript</em></p>
-<pre><code class="lang-javascript">var formie = require('formie'),
-    myformie;
-
-var updateformieData = function(){
-  formie1.update({
-    data: {
-      field1: &quot;field1 data, probably from database&quot;,
-      field2: {
-        field2html: &quot;&lt;h2&gt;field2&lt;/h2&gt;&lt;p&gt;by default this uses EJS, you can use whatever template language you want&lt;/p&gt;&quot;
-      }
-    }
-  });
-};
+<pre><code class="lang-javascript">var Formie = require('formie'),
+    myFormie;
 
 //initialize nav component after the dom has loaded
 window.addEventListener('load',function(){
-    var tabelement = document.getElementById('tabs');
-    myformie = new formie();
-  myformie.addBinder({
-    prop: 'field1',
-    elementSelector: '#field1',
-    binderType: 'value'
-  });
-  myformie.addBinder({
-    prop: 'field2',
-    elementSelector: '#field2',
-    binderType: 'template',
-    binderTemplate: document.querySelector('#field2-template').innerHTML
+    myFormie = new Formie({
+    ajaxformselector: '#formie',
+    headers: {'customheader':'customvalue'},
+    beforesubmitcallback: function(event,formelement){console.log(event,formelement)},
+    successcallback: function(response){console.log(response)},
+    errorcallback: function(error,response){console.log(error,response)}
   });
     //expose your nav component to the window global namespace
-    window.myformie = myformie;
-  updateformieData();
+    window.myFormie = myFormie;
 });</code></pre>
 <p><em>HTML</em></p>
 <pre><code class="lang-html">&lt;html&gt;
@@ -93,51 +74,59 @@ window.addEventListener('load',function(){
       &lt;script src='[path/to/browserify/bundle].js'&gt;&lt;/script&gt;
     &lt;/head&gt;
     &lt;body&gt;
-    &lt;section&gt;
-      &lt;label for=&quot;field1&quot;&gt;Field 1&lt;/label&gt;
-      &lt;input type=&quot;text&quot; value=&quot;&quot; name=&quot;field1&quot; id=&quot;field1&quot; /&gt;
-    &lt;/section&gt;
-    &lt;section&gt;
-      &lt;label for=&quot;field2&quot;&gt;Field 2&lt;/label&gt;
-      &lt;div id=&quot;field2&quot;&gt;&lt;/div&gt;
-    &lt;/section&gt;
-
-    &lt;script id=&quot;field2-template&quot; type=&quot;text/template&quot;&gt;
-      &lt;div&gt;
-          {{- field2html }}
-      &lt;/div&gt;
-    &lt;/script&gt;
+        &lt;form method=&quot;get&quot; action=&quot;&quot; id=&quot;formie&quot;&gt;
+        &lt;section&gt;
+          &lt;label for=&quot;field1&quot;&gt;Field 1&lt;/label&gt;
+          &lt;input type=&quot;text&quot; value=&quot;&quot; name=&quot;field1&quot; id=&quot;field1&quot; /&gt;
+        &lt;/section&gt;
+        &lt;section&gt;
+          &lt;label for=&quot;field2&quot;&gt;Field 2&lt;/label&gt;
+          &lt;input type=&quot;text&quot; value=&quot;&quot; name=&quot;field2&quot; id=&quot;field2&quot; /&gt;
+        &lt;/section&gt;
+        &lt;section&gt;
+          &lt;input type=&quot;submit&quot; value=&quot;ajax submit&quot; name=&quot;submitbutton&quot; /&gt;
+        &lt;/section&gt;
+        &lt;/form&gt;
     &lt;/body&gt;
 &lt;/html&gt;</code></pre>
+<h2>OPTIONS</h2>
+<pre><code class="lang-javascript">defaultOptions = {
+    ajaxsubmitfileuploadclassname: 'formie-file', //file input class to readAsDataURL
+    ajaxformselector: '#formie', //formie form selector
+    ajaxsubmitform: null,
+    jsonp: false, //retrieves data via JSONP, form data must contain a 'callback' parameter
+    autosubmitselectors: '.autoFormSubmit',
+    autosubmitelements: [],
+    preventsubmitselectors: '.noFormSubmit',
+    preventsubmitelements: [],
+    headers: {}, // custom headers to submit
+    queryparameters: {}, // programmitcally add more get data
+    postdata: {}, // programmitcally add more post data
+    beforesubmitcallback: null, // callback(event,formelement)  
+    errorcallback: null, // callback(error,response)
+    successcallback: null // callback(response)
+};</code></pre>
 <h2>API</h2>
-<pre><code class="lang-javascript">//bind UI elements to JSON from AJAX response
-myformie.update({
-  data:responsefromajax
-}); 
-
-//bind UI elements to JSON from AJAX response
-myformie.addBinder({
-  elementSelector:responsefromajax,
-  binderType: 'value' || 'innerHTML' || 'template',
-  binderTemplate: document.querySelector('#templatehtml').innerHTML
-}); 
+<pre><code class="lang-javascript">//submit formie via ajax
+myFormie.submit(); 
 
 //events
-myformie.on('addedBinder',callback); // callback(binder)
-myformie.on('renderedBinder',callback); // callback(data)
-myformie.on('updatedformie',callback); // callback(data)</code></pre>
+myFormie.on('autosubmitelement',callback); // callback(formelement)
+myFormie.on('prevententer',callback); // callback(eventTarget)
+myFormie.on('initialized',callback); // callback()
+myFormie.on('submitted',callback); // callback(formieData)</code></pre>
 <h2>Development</h2>
 <p><em>Make sure you have grunt installed</em></p>
 <pre><code>$ npm install -g grunt-cli</code></pre>
 <p>Then run grunt watch</p>
-<pre><code>$ grunt watch</code></pre>
+<pre><code>$ grunt watch #uses grunt-connect on port 8181</code></pre>
 <h2>For generating documentation</h2>
 <pre><code>$ grunt doc
 $ jsdoc2md lib/**/*.js index.js &gt; doc/api.md</code></pre>
 <h2>Notes</h2>
 <ul>
-<li>The Tab Module uses Node's event Emitter for event handling.</li>
-<li>The Template Generator uses EJS, but you can generate your own mark up</li>
+<li>The Formie uses Node's event Emitter for event handling.</li>
+<li>In order to test post submission, grunt connect is used on port 8181</li>
 </ul></article>
     </section>
 
@@ -155,7 +144,7 @@ $ jsdoc2md lib/**/*.js index.js &gt; doc/api.md</code></pre>
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Dec 11 2014 18:17:05 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Dec 17 2014 17:10:01 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
