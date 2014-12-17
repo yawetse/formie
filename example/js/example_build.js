@@ -92,6 +92,7 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 		beforefn,
 		errorfn,
 		successfn,
+		// jsonpscript,
 		formieDataFromForm,
 		formieData,
 		ajaxResponseHandler = function (err, response) {
@@ -133,7 +134,21 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 	this.options.method = (f.getAttribute('method')) ? f.getAttribute('method') : this.options.method;
 	this.options.action = (f.getAttribute('action')) ? f.getAttribute('action') : (this.options.action) ? this.options.action : window.location.href;
 
-	if (f.getAttribute('enctype') === 'multipart/form-data') {
+	if (this.options.jsonp) {
+		//TODO: replace same script
+		formieData = extend(formieDataFromForm, this.options.queryparameters);
+		// Create a new script element
+		var script_element = document.createElement('script');
+
+		// Set its source to the JSONP API
+		script_element.src = this.options.action + '?' + querystring.stringify(formieData);
+
+		window[formieData.callback] = this.options.successcallback;
+
+		// Stick the script element in the page <head>
+		document.getElementsByTagName('head')[0].appendChild(script_element);
+	}
+	else if (f.getAttribute('enctype') === 'multipart/form-data') {
 		var formData = new FormData(f),
 			fileInputs = f.querySelectorAll('input[type="file"]'),
 			// reader = new FileReader(),
@@ -4240,12 +4255,29 @@ function extend(origin, add) {
 'use strict';
 
 var formie = require('../../index'),
+	formieduckduckgo,
 	formie1,
 	formie2,
 	responseContainer;
 
+// window.duckduckgocallback = function (jsonpdata) {
+// 	responseContainer.innerHTML = JSON.stringify(jsonpdata, null, 2);
+// };
+
 window.addEventListener('load', function () {
 	responseContainer = document.querySelector('#formie-test-result');
+	formieduckduckgo = new formie({
+		jsonp: true,
+		ajaxsubmitselector: '#duckduckgo-formie-test',
+		queryparameters: {
+			callback: 'duckduckgocallback',
+		},
+		successcallback: function (response) {
+			responseContainer.innerHTML = JSON.stringify(response, null, 2);
+		}
+	});
+
+
 	formie1 = new formie({
 		ajaxsubmitselector: '#formie-test',
 		postdata: {

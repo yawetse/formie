@@ -1,12 +1,29 @@
 'use strict';
 
 var formie = require('../../index'),
+	formieduckduckgo,
 	formie1,
 	formie2,
 	responseContainer;
 
+// window.duckduckgocallback = function (jsonpdata) {
+// 	responseContainer.innerHTML = JSON.stringify(jsonpdata, null, 2);
+// };
+
 window.addEventListener('load', function () {
 	responseContainer = document.querySelector('#formie-test-result');
+	formieduckduckgo = new formie({
+		jsonp: true,
+		ajaxsubmitselector: '#duckduckgo-formie-test',
+		queryparameters: {
+			callback: 'duckduckgocallback',
+		},
+		successcallback: function (response) {
+			responseContainer.innerHTML = JSON.stringify(response, null, 2);
+		}
+	});
+
+
 	formie1 = new formie({
 		ajaxsubmitselector: '#formie-test',
 		postdata: {

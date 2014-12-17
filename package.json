@@ -2,7 +2,7 @@
   "title": "formie - CommonJS/Browserified Data, Model, View binding",
   "name": "formie",
   "description": "CommonJS/Browserified simple data view binding, without magic. This is a quick and light weight vanilla JS way to data bind UI elements",
-  "version": "0.8.0",
+  "version": "0.9.9",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
