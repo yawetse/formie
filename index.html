@@ -1,167 +1,156 @@
-<!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Formie by yawetse</title>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Formie</h1>
-        <p>vanillajs ajax forms, with multipart encoding support</p>
+<head>
+  <title>Formie</title>
+  <link rel="stylesheet" type="text/css" href="stylesheets/example.css">
+  <!-- <link rel="stylesheet" type="text/css" href="stylesheets/formie.css"> -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <script src='js/example.min.js'></script>
+</head>
 
-        <p class="view"><a href="https://github.com/yawetse/formie">View the Project on GitHub <small>yawetse/formie</small></a></p>
+<body>
+  <div class="container">
+    <header class="clearfix">
+      <h1>CommonJS/Browserified ajax form submission</h1>
+      <p>Formie submits form data via AJAX. Formie supports JSONP, GET, POST, DELETE and multipart/form-data file Uploads without the baggage of a full framework.</p>
+      </p>
+      <h3>Full API <a href="http://yawetse.github.io/formie/api/html">documentation</a>
+      </h3>
+    </header>
+    <div class="formie-test">
+      <div class="pull-left width50">
+        <form id="duckduckgo-formie-test" name="duckduckgo-formie-test" action="http://api.duckduckgo.com/" class="formie" method="get">
+          <h2>GET JSONP Test</h2>
+          <article class="right-border">
+            <section>
+              <label for="q">Search</label>
+              <div class="label-data-container">
+                <input class="label-data-style" type="text" value="The New York Times" name="q" id="q" />
+                <input type="hidden" name="format" value="json">
+              </div>
+            </section>
+            <section>
+              <input type="submit" name="testformiesubmit" value="Search DuckDuckGo" />
+            </section>
+          </article>
+        </form>
+        <form id="html-formie-test" name="html-formie-test" action="./htmltest.html" class="formie" method="get">
+          <h2>GET HTML Test</h2>
+          <article class="right-border">
+            <section>
+              <input type="submit" name="gethtml" value="Get HTML" />
+            </section>
+          </article>
+        </form>
+        <form id="formie-test" name="formie-test" action="" class="formie" method="get">
+          <h2>GET JSON Test</h2>
+          <article class="right-border">
+            <section>
+              <label for="username">Username</label>
+              <div class="label-data-container">
+                <input class="label-data-style autoFormSubmit" type="text" value="@user" name="username" id="username" />
+              </div>
+            </section>
+            <section>
+              <label for="location">Location</label>
+              <div class="label-data-container">
+                <select class="label-data-style autoFormSubmit" id="location" name="location">
+                  <option value="newyork">New York</option>
+                  <option value="losangeles">Los Angeles</option>
+                  <option value="Miami">Miami</option>
+                  <option value="Chicago">Chicago</option>
+                </select>
+              </div>
+            </section>
+            <section>
+              <label for="tastes">tastes</label>
+              <div class="label-data-container">
+                <input type="checkbox" name="tastes" value="music" class="autoFormSubmit" checked>music</br>
+                <input type="checkbox" name="tastes" value="movies" class="autoFormSubmit">movies</br>
+                <input type="checkbox" name="tastes" value="art" class="autoFormSubmit">art</br>
+                <input type="checkbox" name="tastes" value="food" class="autoFormSubmit" checked>food
+              </div>
+            </section>
+            <section>
+              <label for="sex">Gender</label>
+              <div class="label-data-container">
+                <input type="radio" name="sex" value="male" class="autoFormSubmit" checked>Male
+                <br>
+                <input type="radio" name="sex" class="autoFormSubmit" value="female">Female
+              </div>
+            </section>
+            <!--             <section>
+              <label for="image">Image</label>
+              <div class="label-data-container">
+                <input type="file" id="image" class="label-data-style autoFormSubmit" name="image" multiple="multiple">
+              </div>
+            </section> -->
+            <section>
+              <label>Profile</label>
+              <div class="label-data-container">
+                <textarea class="label-data-style autoFormSubmit" name="description" id="description"></textarea>
+              </div>
+            </section>
+            <section>
+              <input type="submit" name="testformiesubmit" value="AJAX Get" />
+            </section>
+          </article>
+        </form>
 
+        <form id="upload-formie-test" name="upload-formie-test" action="postresult.json" class="formie" method="post" enctype="multipart/form-data">
+          <h2>POST JSON: Upload media test</h2>
+          <article class="right-border">
+            <section>
+              <label for="title">title</label>
+              <div class="label-data-container">
+                <input class="label-data-style autoFormSubmit" type="text" value="" name="title" id="title" />
+              </div>
+            </section>
+            <section>
+              <label for="image">Image</label>
+              <div class="label-data-container">
+                <input type="file" id="image" class="label-data-style formie-file autoFormSubmit" name="image" multiple="multiple">
+              </div>
+            </section>
+            <section>
+              <label>description</label>
+              <div class="label-data-container">
+                <textarea class="label-data-style" name="description" id="description"></textarea>
+              </div>
+            </section>
+            <section>
+              <input type="submit" name="testformiesubmit" value="AJAX Post Upload" />
+            </section>
+          </article>
 
-        <ul>
-          <li><a href="https://github.com/yawetse/formie/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/yawetse/formie/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/yawetse/formie">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
-<a id="formie--" class="anchor" href="#formie--" aria-hidden="true"><span class="octicon octicon-link"></span></a>formie  <a href="http://badge.fury.io/js/formie"><img src="https://badge.fury.io/js/formie.svg" alt="NPM version"></a>
-</h1>
-
-<p>** CommonJS/Browserified ajax form submission **</p>
-
-<p>Formie submits form data via AJAX. Formie supports JSONP, GET, POST, DELETE and multipart/form-data file Uploads without the baggage of a full framework. </p>
-
-<p><a href="https://yawetse.github.io/formie/api/html/index.html">API Documenation</a></p>
-
-<h2>
-<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h2>
-
-<p>Check out <code>example/index.html</code>, the example javascript for the example page is <code>resources/js/example_src.js</code></p>
-
-<h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
-
-<pre><code>$ npm install formie
-</code></pre>
-
-<p>Formie is a browserified/commonjs javascript module.</p>
-
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
-
-<p><em>JavaScript</em></p>
-
-<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> Formie <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>formie<span class="pl-pds">'</span></span>),
-    myFormie;
-
-<span class="pl-c">//initialize nav component after the dom has loaded</span>
-<span class="pl-s3">window</span>.addEventListener(<span class="pl-s1"><span class="pl-pds">'</span>load<span class="pl-pds">'</span></span>,<span class="pl-st">function</span>(){
-    myFormie <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Formie</span>({
-    ajaxformselector<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>#formie<span class="pl-pds">'</span></span>,
-    headers<span class="pl-k">:</span> {<span class="pl-s1"><span class="pl-pds">'</span>customheader<span class="pl-pds">'</span></span><span class="pl-k">:</span><span class="pl-s1"><span class="pl-pds">'</span>customvalue<span class="pl-pds">'</span></span>},
-    <span class="pl-en">beforesubmitcallback</span>: <span class="pl-st">function</span>(<span class="pl-vpf">event</span>,<span class="pl-vpf">formelement</span>){<span class="pl-en">console</span><span class="pl-s3">.log</span>(<span class="pl-s3">event</span>,formelement)},
-    <span class="pl-en">successcallback</span>: <span class="pl-st">function</span>(<span class="pl-vpf">response</span>){<span class="pl-en">console</span><span class="pl-s3">.log</span>(response)},
-    <span class="pl-en">errorcallback</span>: <span class="pl-st">function</span>(<span class="pl-vpf">error</span>,<span class="pl-vpf">response</span>){<span class="pl-en">console</span><span class="pl-s3">.log</span>(error,response)}
-  });
-    <span class="pl-c">//expose your nav component to the window global namespace</span>
-    <span class="pl-s3">window</span>.myFormie <span class="pl-k">=</span> myFormie;
-});</pre></div>
-
-<p><em>HTML</em></p>
-
-<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">html</span>&gt;
-    &lt;<span class="pl-ent">head</span>&gt;
-    &lt;<span class="pl-ent">title</span>&gt;Your Page&lt;/<span class="pl-ent">title</span>&gt;
-<span class="pl-s2">    &lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s1"><span class="pl-pds">'</span>[path/to/browserify/bundle].js<span class="pl-pds">'</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</span>
-    &lt;/<span class="pl-ent">head</span>&gt;
-    &lt;<span class="pl-ent">body</span>&gt;
-        &lt;<span class="pl-ent">form</span> <span class="pl-e">method</span>=<span class="pl-s1"><span class="pl-pds">"</span>get<span class="pl-pds">"</span></span> <span class="pl-e">action</span>=<span class="pl-s1"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> <span class="pl-e">id</span>=<span class="pl-s1"><span class="pl-pds">"</span>formie<span class="pl-pds">"</span></span>&gt;
-        &lt;<span class="pl-ent">section</span>&gt;
-          &lt;<span class="pl-ent">label</span> <span class="pl-e">for</span>=<span class="pl-s1"><span class="pl-pds">"</span>field1<span class="pl-pds">"</span></span>&gt;Field 1&lt;/<span class="pl-ent">label</span>&gt;
-          &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s1"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">"</span>field1<span class="pl-pds">"</span></span> <span class="pl-e">id</span>=<span class="pl-s1"><span class="pl-pds">"</span>field1<span class="pl-pds">"</span></span> /&gt;
-        &lt;/<span class="pl-ent">section</span>&gt;
-        &lt;<span class="pl-ent">section</span>&gt;
-          &lt;<span class="pl-ent">label</span> <span class="pl-e">for</span>=<span class="pl-s1"><span class="pl-pds">"</span>field2<span class="pl-pds">"</span></span>&gt;Field 2&lt;/<span class="pl-ent">label</span>&gt;
-          &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s1"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">"</span>field2<span class="pl-pds">"</span></span> <span class="pl-e">id</span>=<span class="pl-s1"><span class="pl-pds">"</span>field2<span class="pl-pds">"</span></span> /&gt;
-        &lt;/<span class="pl-ent">section</span>&gt;
-        &lt;<span class="pl-ent">section</span>&gt;
-          &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s1"><span class="pl-pds">"</span>ajax submit<span class="pl-pds">"</span></span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">"</span>submitbutton<span class="pl-pds">"</span></span> /&gt;
-        &lt;/<span class="pl-ent">section</span>&gt;
-        &lt;/<span class="pl-ent">form</span>&gt;
-    &lt;/<span class="pl-ent">body</span>&gt;
-&lt;/<span class="pl-ent">html</span>&gt;</pre></div>
-
-<h2>
-<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>OPTIONS</h2>
-
-<div class="highlight highlight-javascript"><pre>defaultOptions <span class="pl-k">=</span> {
-    ajaxsubmitfileuploadclassname<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>formie-file<span class="pl-pds">'</span></span>, <span class="pl-c">//file input class to readAsDataURL</span>
-    ajaxformselector<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>#formie<span class="pl-pds">'</span></span>, <span class="pl-c">//formie form selector</span>
-    ajaxsubmitform<span class="pl-k">:</span> <span class="pl-c1">null</span>,
-    jsonp<span class="pl-k">:</span> <span class="pl-c1">false</span>, <span class="pl-c">//retrieves data via JSONP, form data must contain a 'callback' parameter</span>
-    autosubmitselectors<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>.autoFormSubmit<span class="pl-pds">'</span></span>,
-    autosubmitelements<span class="pl-k">:</span> [],
-    preventsubmitselectors<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>.noFormSubmit<span class="pl-pds">'</span></span>,
-    preventsubmitelements<span class="pl-k">:</span> [],
-    headers<span class="pl-k">:</span> {}, <span class="pl-c">// custom headers to submit</span>
-    queryparameters<span class="pl-k">:</span> {}, <span class="pl-c">// programmitcally add more get data</span>
-    postdata<span class="pl-k">:</span> {}, <span class="pl-c">// programmitcally add more post data</span>
-    beforesubmitcallback<span class="pl-k">:</span> <span class="pl-c1">null</span>, <span class="pl-c">// callback(event,formelement)  </span>
-    errorcallback<span class="pl-k">:</span> <span class="pl-c1">null</span>, <span class="pl-c">// callback(error,response)</span>
-    successcallback<span class="pl-k">:</span> <span class="pl-c1">null</span> <span class="pl-c">// callback(response)</span>
-};</pre></div>
-
-<h2>
-<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h2>
-
-<div class="highlight highlight-javascript"><pre><span class="pl-c">//submit formie via ajax</span>
-myFormie.<span class="pl-s3">submit</span>(); 
-
-<span class="pl-c">//events</span>
-myFormie.on(<span class="pl-s1"><span class="pl-pds">'</span>autosubmitelement<span class="pl-pds">'</span></span>,callback); <span class="pl-c">// callback(formelement)</span>
-myFormie.on(<span class="pl-s1"><span class="pl-pds">'</span>prevententer<span class="pl-pds">'</span></span>,callback); <span class="pl-c">// callback(eventTarget)</span>
-myFormie.on(<span class="pl-s1"><span class="pl-pds">'</span>initialized<span class="pl-pds">'</span></span>,callback); <span class="pl-c">// callback()</span>
-myFormie.on(<span class="pl-s1"><span class="pl-pds">'</span>submitted<span class="pl-pds">'</span></span>,callback); <span class="pl-c">// callback(formieData)</span></pre></div>
-
-<h2>
-<a id="development" class="anchor" href="#development" aria-hidden="true"><span class="octicon octicon-link"></span></a>Development</h2>
-
-<p><em>Make sure you have grunt installed</em></p>
-
-<pre><code>$ npm install -g grunt-cli
-</code></pre>
-
-<p>Then run grunt watch</p>
-
-<pre><code>$ grunt watch #uses grunt-connect on port 8181 
-</code></pre>
-
-<h2>
-<a id="for-generating-documentation" class="anchor" href="#for-generating-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>For generating documentation</h2>
-
-<pre><code>$ grunt doc
-$ jsdoc2md lib/**/*.js index.js &gt; doc/api.md
-</code></pre>
-
-<h2>
-<a id="notes" class="anchor" href="#notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notes</h2>
-
-<ul>
-<li>The Formie uses Node's event Emitter for event handling.</li>
-<li>In order to test post submission, grunt connect is used on port 8181</li>
-</ul>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/yawetse">yawetse</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+        </form>
+      </div>
+      <div class="pull-left width50">
+        <div class="fixed-response-container">
+          <h2>Form Response Data</h2>
+          <pre id="formie-test-result"></pre>
+        </div>
+      </div>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+  </div>
+  <script>
+  (function(i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function() {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+  ga('create', 'UA-52892914-6', 'auto');
+  ga('send', 'pageview');
+  </script>
+</body>
+
 </html>
