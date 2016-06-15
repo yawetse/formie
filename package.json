@@ -1,8 +1,8 @@
 {
   "title": "formie - CommonJS/Browserified ajax form submission",
   "name": "formie",
-  "description": "Formie submits form data via AJAX. Formie supports JSONP, GET, POST, DELETE and multipart/form-data file Uploads without the baggage of a full framework.",
-  "version": "1.1.0",
+  "description": "Formie submits form data via AJAX. Formie supports JSONP, GET, POST, PUT, DELETE and multipart/form-data file Uploads without the baggage of a full framework.",
+  "version": "1.2.0",
   "main": "index.js",
   "engines": {
     "node": ">=6.x"
