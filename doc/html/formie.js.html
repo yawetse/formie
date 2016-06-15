@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>JSDoc: Source: formie.js</title>
-    
+
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
@@ -16,16 +16,17 @@
 <body>
 
 <div id="main">
-    
+
     <h1 class="page-title">Source: formie.js</h1>
+
     
-    
+
 
 
     
     <section>
         <article>
-            <pre class="prettyprint source"><code>/*
+            <pre class="prettyprint source linenums"><code>/*
  * formie
  * http://github.com/yawetse/formie
  *
@@ -34,9 +35,9 @@
 'use strict';
 
 var async = require('async'),
-	classie = require('classie'),
+	// classie = require('classie'),
 	events = require('events'),
-	forbject = require('forbject'),
+	Forbject = require('forbject'),
 	querystring = require('querystring'),
 	request = require('superagent'),
 	util = require('util'),
@@ -130,7 +131,7 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 		formieDataFromForm,
 		formieData,
 		ajaxResponseHandler = function (err, response) {
-			if (err && this.options.errorcallback) {
+			if (err &amp;&amp; this.options.errorcallback) {
 				errorfn = this.options.errorcallback;
 				if (typeof errorfn === 'function') {
 					errorfn(err, response);
@@ -163,8 +164,18 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 			beforefn(e, f);
 		}
 	}
-
-	formieDataFromForm = new forbject(f).getObject();
+	var forbjectOptions = {};
+	if (f.getAttribute('forbject-autorefresh')) {
+		forbjectOptions.autorefresh = f.getAttribute('forbject-autorefresh');
+	}
+	if (f.getAttribute('forbject-addelementsonrefresh')) {
+		forbjectOptions.addelementsonrefresh = f.getAttribute('forbject-addelementsonrefresh');
+	}
+	if (f.getAttribute('forbject-valuefilter')) {
+		forbjectOptions.valuefilter = f.getAttribute('forbject-valuefilter');
+	}
+	this.options.forbject = new Forbject(f, forbjectOptions);
+	formieDataFromForm = this.options.forbject.getObject();
 	// console.log('f.getAttribute("enctype")', f.getAttribute('enctype'));
 
 	this.options.method = (f.getAttribute('method')) ? f.getAttribute('method').toLowerCase() : this.options.method.toLowerCase();
@@ -201,13 +212,48 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 			asyncFileReaderCB = function (fileinputname, file) {
 				return function (cb) {
 					var filereader = new FileReader();
-					filereader.readAsDataURL(file);
-					filereader.onload = function () {
-						// console.log('e', e);
-						// console.log('filereader', filereader);
-						formData.append(fileinputname, filereader.result, file.name);
-						cb(null, file);
-					};
+					if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) {
+						filereader.readAsDataURL(file);
+						filereader.onload = function () {
+							// console.log('this is firefox');
+							// console.log('e', e);
+							// console.log('fileinputname', fileinputname);
+							// console.log('filereader.result', filereader.result);
+							// console.log('file.name', file.name);
+							// console.log('file.type', file.type);
+							var makeblob = function dataURItoBlob(dataURI) {
+								// convert base64/URLEncoded data component to raw binary data held in a string
+								var byteString;
+								if (dataURI.split(',')[0].indexOf('base64') >= 0) {
+									byteString = atob(dataURI.split(',')[1]);
+								}
+								else {
+									byteString = unescape(dataURI.split(',')[1]);
+								}
+								// separate out the mime component
+								var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+								// write the bytes of the string to a typed array
+								var ia = new Uint8Array(byteString.length);
+								for (var i = 0; i &lt; byteString.length; i++) {
+									ia[i] = byteString.charCodeAt(i);
+								}
+
+								return new Blob([ia], {
+									type: mimeString
+								});
+							};
+							formData.append(fileinputname, makeblob(filereader.result), file.name);
+							cb(null, file);
+						};
+					}
+					else {
+						filereader.readAsDataURL(file);
+						filereader.onload = function () {
+							formData.append(fileinputname, filereader.result, file.name);
+							cb(null, file);
+						};
+					}
 				};
 			};
 
@@ -224,15 +270,20 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 			}
 			async.parallel(
 				asyncFunctions,
-				function (err) { //, results) {
-					// console.log('async results', results);
+				function (err /* , results*/ ) {
+					// console.log('async err, results',err, results);
 					try {
+						if (err) {
+							throw err;
+						}
 						client.open(this.options.method, this.options.action + '?' + querystring.stringify(this.options.queryparameters), true);
 						if (this.options.headers) {
 							for (var i in this.options.headers) {
 								client.setRequestHeader(i, this.options.headers[i]);
 							}
 						}
+						// console.log('client',client);
+						// console.log('formData',formData);
 						client.send(formData); /* Send to server */
 						// client.onreadystatechange = function () {}
 						client.onabort = function (err) {
@@ -268,6 +319,7 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 		request
 			.get(this.options.action)
 			.set(this.options.headers)
+			.withCredentials()
 			.query(formieData)
 			.end(ajaxResponseHandler);
 	}
@@ -276,14 +328,16 @@ formie.prototype.__ajaxSubmitFormie = function (e, element) {
 		request
 			.del(this.options.action)
 			.set(this.options.headers)
+			.withCredentials()
 			.send(formieData)
 			.end(ajaxResponseHandler);
 	}
-	else if (this.options.method === 'post') {
+	else if (this.options.method === 'post' || this.options.method === 'put') {
 		formieData = extend(formieDataFromForm, this.options.postdata);
 		request
 			.post(this.options.action)
 			.set(this.options.headers)
+			.withCredentials()
 			.query(this.options.queryparameters)
 			.send(formieData)
 			.end(ajaxResponseHandler);
@@ -392,13 +446,13 @@ module.exports = formie;
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="formie.html">formie</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="formie.html">formie</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Dec 17 2014 17:10:01 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Jun 15 2016 10:51:22 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
